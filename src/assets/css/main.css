@@ -1,0 +1,6 @@
+@import './reset.css';
+@import './font.css';
+
+* {
+  font-family: 'Spoqa Han Sans';
+}
