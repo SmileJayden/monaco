@@ -28,6 +28,7 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    setFiles([]);
     const files = e.target.files;
     if (files)
       for (let i = 0; i < files.length; i++) {

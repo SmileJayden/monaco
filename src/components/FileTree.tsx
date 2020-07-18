@@ -20,7 +20,7 @@ const FileTreeWrapper = styled.div`
     height: 500px;
     overflow-y: auto;
     p {
-      padding: 5px;
+      padding: 10px;
       cursor: pointer;
       &:hover {
         background-color: deepskyblue;
