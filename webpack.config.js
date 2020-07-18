@@ -1,4 +1,5 @@
 const path = require('path');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const HTMLplugin = require('html-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -29,11 +30,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(woff|woff2|ttf|eot)$/,
-        use: 'file-loader?name=fonts/[name].[ext]!static',
+        use: ['file-loader'],
       },
     ],
   },
@@ -47,6 +48,8 @@ module.exports = {
   plugins: [
     new HTMLplugin({
       template: './index.html',
+      title: 'Monaco Editor Sample',
     }),
+    new MonacoWebpackPlugin({ languages: ['typescript', 'javascript', 'css'] }),
   ],
 };
