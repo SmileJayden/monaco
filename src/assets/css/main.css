@@ -4,3 +4,7 @@
 * {
   font-family: 'Spoqa Han Sans';
 }
+
+#monaco-editor * {
+  font-family: Menlo, Monaco, 'Courier New', monospace;
+}

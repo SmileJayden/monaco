@@ -37,6 +37,7 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ minHeight, minWidth }) => {
         ref={monacoEditorRef}
         minHeight={minHeight}
         minWidth={minWidth}
+        id="monaco-editor"
       />
     </>
   );
