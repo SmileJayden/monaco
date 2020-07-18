@@ -25,7 +25,7 @@ const AppWrapper = styled.div`
 
 const App = () => {
   const [files, setFiles] = useState<FileType[]>([]);
-  const [selectedFile, setSelectedFile] = useState<JSZipObject | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -34,10 +34,11 @@ const App = () => {
         JSZip.loadAsync(files[i])
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
-              setFiles((prevState: FileType[]) => [
-                ...prevState,
-                { name: file.name, file: file, id: uuid() },
-              ]);
+              if (!file.dir)
+                setFiles((prevState: FileType[]) => [
+                  ...prevState,
+                  { name: file.name, zipObj: file, id: uuid() },
+                ]);
             });
           })
           .catch((err) => {
@@ -46,7 +47,7 @@ const App = () => {
       }
   };
 
-  const handleOnClickFile = (file: JSZipObject) => {
+  const handleOnClickFile = (file: FileType) => {
     setSelectedFile((prevState) => file);
   };
 
@@ -56,7 +57,11 @@ const App = () => {
       <div className="program">
         <FileTree files={files} onClickFile={handleOnClickFile} />
         <div className="editor">
-          <Tabs />
+          <Tabs
+            selectedFileId={selectedFile?.id}
+            files={files}
+            onClickFileTap={handleOnClickFile}
+          />
           <CodingRoom file={selectedFile} minHeight={500} minWidth={750} />
         </div>
       </div>

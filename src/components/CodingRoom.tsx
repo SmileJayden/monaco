@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
-import { JSZipObject } from 'jszip';
+import { FileType } from '~/types';
 
 interface CodingRoomProps extends CodingRoomWrapperProps {
-  file: JSZipObject | null;
+  file: FileType | null;
 }
 
 interface CodingRoomWrapperProps {
@@ -29,8 +29,9 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
 
   useEffect(() => {
     (async function setEditorContent() {
+      await setTimeout(() => {}, 3000);
       let editorContent: string = 'const foo = () => 0;';
-      await file
+      await file?.zipObj
         ?.async('string')
         .then((content) => {
           editorContent = content;

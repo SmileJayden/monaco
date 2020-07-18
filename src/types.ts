@@ -2,6 +2,6 @@ import { JSZipObject } from 'jszip';
 
 export interface FileType {
   name: string;
-  file: JSZipObject;
+  zipObj: JSZipObject;
   id: string;
 }
