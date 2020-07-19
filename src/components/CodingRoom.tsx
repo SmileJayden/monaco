@@ -6,7 +6,7 @@ import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import { FileType } from '~/types';
 
 interface CodingRoomProps extends CodingRoomWrapperProps {
-  file: FileType | null;
+  file: FileType | undefined;
 }
 
 interface CodingRoomWrapperProps {

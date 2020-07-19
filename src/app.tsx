@@ -27,7 +27,9 @@ const AppWrapper = styled.div`
 const App = () => {
   const [files, setFiles] = useState<FileType[]>([]);
   const [openFiles, setOpenFiles] = useState<FileType[]>([]);
-  const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileType | undefined>(
+    undefined
+  );
 
   const uploadFile = (e: ChangeEvent<HTMLInputElement>): void => {
     setFiles([]);
