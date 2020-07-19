@@ -35,7 +35,7 @@ const TabsWrapper = styled.div`
     }
     button {
       cursor: pointer;
-      width: 40px;
+      min-width: 50px;
     }
   }
 `;

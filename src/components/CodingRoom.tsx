@@ -4,25 +4,35 @@ import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import { FileType } from '~/types';
+import { getFileExtension } from '~/utils';
 
-interface CodingRoomProps extends CodingRoomWrapperProps {
+interface CodingRoomProps {
   file: FileType | undefined;
 }
 
 interface CodingRoomWrapperProps {
-  minHeight: number;
-  minWidth: number;
+  editable: boolean;
 }
 
 const CodingRoomWrapper = styled.div<CodingRoomWrapperProps>`
-  height: ${(props) => props.minHeight}px;
-  min-width: ${(props) => props.minWidth}px;
+  background-color: #333333;
+  display: ${(props) => (props.editable ? 'block' : 'flex')};
+
+  &,
+  #monaco-editor {
+    height: 100%;
+  }
+  img {
+    color: white;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
 `;
 
-const getEditorLang = (fileName: string | undefined): string => {
-  if (!fileName) return '';
-  const extension = fileName!.split('.').pop();
-  switch (extension) {
+const getEditorLang = (fileExtension: string | undefined): string => {
+  if (!fileExtension) return '';
+  switch (fileExtension) {
     case 'js':
     case 'jsx':
       return 'javascript';
@@ -42,19 +52,16 @@ const getEditorLang = (fileName: string | undefined): string => {
   }
 };
 
-const CodingRoom: React.FC<CodingRoomProps> = ({
-  minHeight,
-  minWidth,
-  file,
-}) => {
+const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
   const monacoEditorRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   let monacoEditor: IStandaloneCodeEditor | null = null;
 
   useEffect(() => {
     if (monacoEditorRef.current) {
       monacoEditor = monaco.editor.create(monacoEditorRef.current, {
         value: file?.content,
-        language: getEditorLang(file?.name),
+        language: getEditorLang(getFileExtension(file?.name)),
         theme: 'vs-dark',
         scrollBeyondLastLine: false,
       });
@@ -70,6 +77,10 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
       },
     });
 
+    if (file && file?.content && imgRef.current) {
+      imgRef.current.src = 'data:image/jpeg;base64,' + btoa(file?.content);
+    }
+
     return () => {
       // https://github.com/microsoft/monaco-editor/issues/1842#issuecomment-616290623
       monacoEditor && monacoEditor?.dispose();
@@ -77,12 +88,13 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
   }, [file]);
 
   return (
-    <CodingRoomWrapper
-      ref={monacoEditorRef}
-      minHeight={minHeight}
-      minWidth={minWidth}
-      id="monaco-editor"
-    />
+    <CodingRoomWrapper editable={!!file?.isEditable}>
+      {file?.isEditable ? (
+        <div ref={monacoEditorRef} id="monaco-editor" />
+      ) : (
+        <img ref={imgRef} alt={'This is not editable'} />
+      )}
+    </CodingRoomWrapper>
   );
 };
 

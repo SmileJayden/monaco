@@ -9,6 +9,7 @@ import FileTree from '~/components/FileTree';
 import Tabs from '~/components/Tabs';
 import CodingRoom from '~/components/CodingRoom';
 import { FileType } from '~/types';
+import { getFileExtension, getIsEditable } from '~/utils';
 import FileSaver from 'file-saver';
 
 const AppWrapper = styled.div`
@@ -20,6 +21,24 @@ const AppWrapper = styled.div`
 
     .editor {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      .coding-room-container {
+        background-color: #333333;
+        position: relative;
+        flex: 1;
+        .coding-room {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 1;
+        }
+        .coding-room-selected {
+          z-index: 999;
+        }
+      }
     }
   }
 `;
@@ -33,17 +52,20 @@ const App = () => {
 
   const uploadFile = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
     setFiles([]);
+    setOpenFiles([]);
+    setSelectedFile(undefined);
     const zipFiles = e.target.files;
     if (zipFiles)
       for (let i = 0; i < zipFiles.length; i++) {
         JSZip.loadAsync(zipFiles[i])
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
-              file.async('string').then((content) => {
+              file.async('binarystring').then((content) => {
                 setFiles((prevState: FileType[]) => [
                   ...prevState,
                   {
                     isDir: file.dir,
+                    isEditable: getIsEditable(getFileExtension(file.name)),
                     name: file.name,
                     id: uuid(),
                     content,
@@ -119,7 +141,22 @@ const App = () => {
             onClickFileTap={handleOnClickFile}
             onClickBtn={handleCloseFile}
           />
-          <CodingRoom file={selectedFile} minHeight={500} minWidth={750} />
+          <div className="coding-room-container">
+            {openFiles.map((openFile) => {
+              return (
+                <div
+                  className={`coding-room ${
+                    openFile.id === selectedFile?.id
+                      ? 'coding-room-selected'
+                      : ''
+                  }`}
+                  key={`coding-room-${openFile.id}`}
+                >
+                  <CodingRoom file={openFile} />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </AppWrapper>
