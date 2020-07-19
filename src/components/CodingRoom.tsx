@@ -7,7 +7,7 @@ import { FileType } from '~/types';
 import { getFileExtension } from '~/utils';
 
 interface CodingRoomProps {
-  file: FileType | undefined;
+  file: FileType;
 }
 
 interface CodingRoomWrapperProps {
@@ -60,8 +60,8 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
   useEffect(() => {
     if (monacoEditorRef.current) {
       monacoEditor = monaco.editor.create(monacoEditorRef.current, {
-        value: file?.content,
-        language: getEditorLang(getFileExtension(file?.name)),
+        value: file.content,
+        language: getEditorLang(getFileExtension(file.name)),
         theme: 'vs-dark',
         scrollBeyondLastLine: false,
       });
@@ -77,8 +77,8 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
       },
     });
 
-    if (file && file?.content && imgRef.current) {
-      imgRef.current.src = 'data:image/jpeg;base64,' + btoa(file?.content);
+    if (file && file.content && imgRef.current) {
+      imgRef.current.src = 'data:image/jpeg;base64,' + btoa(file.content);
     }
 
     return () => {
@@ -88,8 +88,8 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
   }, [file]);
 
   return (
-    <CodingRoomWrapper editable={!!file?.isEditable}>
-      {file?.isEditable ? (
+    <CodingRoomWrapper editable={!!file.isEditable}>
+      {file.isEditable ? (
         <div ref={monacoEditorRef} id="monaco-editor" />
       ) : (
         <img ref={imgRef} alt={'This is not editable'} />

@@ -51,15 +51,16 @@ const App = () => {
   );
 
   const uploadFile = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
-    setFiles([]);
-    setOpenFiles([]);
-    setSelectedFile(undefined);
     const zipFiles = e.target.files;
-    if (zipFiles)
+    if (zipFiles && zipFiles.length > 0) {
+      setFiles([]);
+      setOpenFiles([]);
+      setSelectedFile(undefined);
       for (let i = 0; i < zipFiles.length; i++) {
         JSZip.loadAsync(zipFiles[i])
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
+              // TODO: calibrate binarystring, string , .md file .. extra
               file.async('binarystring').then((content) => {
                 setFiles((prevState: FileType[]) => [
                   ...prevState,
@@ -78,6 +79,7 @@ const App = () => {
             throw new Error(err);
           });
       }
+    }
   }, []);
 
   const handleDownLoadFile = (): void => {
