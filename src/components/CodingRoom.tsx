@@ -33,8 +33,19 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
         value: file?.content,
         language: 'javascript',
         theme: 'vs-dark',
+        scrollBeyondLastLine: false,
       });
     }
+
+    monacoEditor?.addAction({
+      id: 'monaco-redo',
+      label: 'editor redo',
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_R],
+      run(editor: editor.ICodeEditor, ...args): void | Promise<void> {
+        editor.trigger('', 'redo', '');
+        return;
+      },
+    });
 
     return () => {
       monacoEditor && monacoEditor?.dispose();

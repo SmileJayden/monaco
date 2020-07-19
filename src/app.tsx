@@ -33,10 +33,10 @@ const App = () => {
 
   const uploadFile = (e: ChangeEvent<HTMLInputElement>): void => {
     setFiles([]);
-    const files = e.target.files;
-    if (files)
-      for (let i = 0; i < files.length; i++) {
-        JSZip.loadAsync(files[i])
+    const zipFiles = e.target.files;
+    if (zipFiles)
+      for (let i = 0; i < zipFiles.length; i++) {
+        JSZip.loadAsync(zipFiles[i])
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
               file.async('string').then((content) => {
