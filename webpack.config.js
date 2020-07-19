@@ -50,6 +50,8 @@ module.exports = {
       template: './index.html',
       title: 'Monaco Editor Sample',
     }),
-    new MonacoWebpackPlugin({ languages: ['typescript', 'javascript', 'css'] }),
+    new MonacoWebpackPlugin({
+      languages: ['javascript', 'css', 'html', 'typescript'],
+    }),
   ],
 };
