@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
@@ -28,26 +28,13 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
   let monacoEditor: IStandaloneCodeEditor | null = null;
 
   useEffect(() => {
-    (async function setEditorContent() {
-      await setTimeout(() => {}, 3000);
-      let editorContent: string = 'const foo = () => 0;';
-      await file?.zipObj
-        ?.async('string')
-        .then((content) => {
-          editorContent = content;
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
-
-      if (monacoEditorRef.current) {
-        monacoEditor = monaco.editor.create(monacoEditorRef.current, {
-          value: editorContent,
-          language: 'javascript',
-          theme: 'vs-dark',
-        });
-      }
-    })();
+    if (monacoEditorRef.current) {
+      monacoEditor = monaco.editor.create(monacoEditorRef.current, {
+        value: file?.content,
+        language: 'javascript',
+        theme: 'vs-dark',
+      });
+    }
 
     return () => {
       monacoEditor && monacoEditor?.dispose();
@@ -64,4 +51,6 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
   );
 };
 
-export default CodingRoom;
+const MemoizedCodingRoom = memo(CodingRoom);
+
+export default MemoizedCodingRoom;

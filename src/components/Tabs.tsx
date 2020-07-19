@@ -4,8 +4,9 @@ import { FileType } from '~/types';
 
 interface TabsProps {
   files: FileType[];
-  onClickFileTap: (file: FileType) => void;
   selectedFileId: string | undefined;
+  onClickFileTap: (file: FileType) => void;
+  onClickBtn: (file: FileType) => void;
 }
 
 const TabsWrapper = styled.div`
@@ -19,23 +20,42 @@ const TabsWrapper = styled.div`
   overflow-x: auto;
   border-bottom: 1px solid dimgrey;
 
-  p {
+  .tab {
     margin: 0 10px;
     padding: 5px;
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
     &:hover {
       background-color: dimgrey;
+    }
+    &.selected {
+      cursor: initial;
+      background-color: darkgoldenrod;
+    }
+    button {
+      cursor: pointer;
+      width: 40px;
     }
   }
 `;
 
-const Tabs: React.FC<TabsProps> = ({ files, onClickFileTap }) => {
+const Tabs: React.FC<TabsProps> = ({
+  files,
+  selectedFileId,
+  onClickFileTap,
+  onClickBtn,
+}) => {
   return (
     <TabsWrapper>
       {files.map((file: FileType) => (
-        <p onClick={() => onClickFileTap(file)} key={`tap-${file.id}`}>
-          {file.name}
-        </p>
+        <div
+          key={`tap-${file.id}`}
+          className={`tab ${file.id === selectedFileId ? 'selected' : ''}`}
+        >
+          <p onClick={() => onClickFileTap(file)}>{file.name}</p>
+          <button onClick={() => onClickBtn(file)}>닫기</button>
+        </div>
       ))}
     </TabsWrapper>
   );

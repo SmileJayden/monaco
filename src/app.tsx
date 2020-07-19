@@ -9,6 +9,7 @@ import FileTree from '~/components/FileTree';
 import Tabs from '~/components/Tabs';
 import CodingRoom from '~/components/CodingRoom';
 import { FileType } from '~/types';
+import FileSaver from 'file-saver';
 
 const AppWrapper = styled.div`
   position: relative;
@@ -25,9 +26,10 @@ const AppWrapper = styled.div`
 
 const App = () => {
   const [files, setFiles] = useState<FileType[]>([]);
+  const [openFiles, setOpenFiles] = useState<FileType[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
 
-  const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
+  const uploadFile = (e: ChangeEvent<HTMLInputElement>): void => {
     setFiles([]);
     const files = e.target.files;
     if (files)
@@ -35,11 +37,17 @@ const App = () => {
         JSZip.loadAsync(files[i])
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
-              if (!file.dir)
+              file.async('string').then((content) => {
                 setFiles((prevState: FileType[]) => [
                   ...prevState,
-                  { name: file.name, zipObj: file, id: uuid() },
+                  {
+                    isDir: file.dir,
+                    name: file.name,
+                    id: uuid(),
+                    content,
+                  },
                 ]);
+              });
             });
           })
           .catch((err) => {
@@ -48,20 +56,66 @@ const App = () => {
       }
   };
 
-  const handleOnClickFile = (file: FileType) => {
-    setSelectedFile((prevState) => file);
+  const handleDownLoadFile = (): void => {
+    console.log(files);
+    // const zip = JSZip();
+    // zip.file('Hello.tsx', 'Hello world\n');
+    // zip.file('Hello1.txt', 'Hello world\n');
+    // zip.file('Hello3.js', 'Hello woasdfrld\n');
+    // zip.file('Hello3.txt', 'Hello worasdfld\n');
+    // zip.file('Hello4.ts', 'Hello worasdfasdffld\n');
+    // zip.file('ttt/Hello4.txt', 'Hello woadsfrasdfasdffld\n');
+    // zip.folder('folder_1/');
+    // zip.file('folder_1/folder1test.txt', 'Hello woadsfrasdfasdffld\n');
+    // zip.folder('folder_23/askdjf/sadghdk/');
+    // zip.folder('folder_yesslash/');
+    // zip.folder('folder_noslash');
+    //
+    // zip
+    //   .generateAsync({ type: 'blob' })
+    //   .then((blob) => {
+    //     FileSaver.saveAs(blob, 'hello.zip');
+    //   })
+    //   .catch((err) => {
+    //     throw new Error(err);
+    //   });
+  };
+
+  const handleOnClickFile = (file: FileType): void => {
+    if (!openFiles.some((f) => f.id === file.id))
+      setOpenFiles((prevState: FileType[]) => [...prevState, file]);
+    setSelectedFile(file);
+  };
+
+  const handleCloseFile = (file: FileType): void => {
+    if (selectedFile && file.id === selectedFile.id) {
+      const closedFileIndex = openFiles.findIndex((f) => f.id === file.id);
+      const updatedSelectedFile =
+        openFiles[closedFileIndex > 0 ? closedFileIndex - 1 : 1];
+      setSelectedFile(updatedSelectedFile);
+    }
+    setOpenFiles((prevState: FileType[]) =>
+      prevState.filter((f) => f.id !== file.id)
+    );
   };
 
   return (
     <AppWrapper>
-      <FileLoadHandler handleChangeFile={handleChangeFile} />
+      <FileLoadHandler
+        handleChangeFile={uploadFile}
+        handleClickBtn={handleDownLoadFile}
+      />
       <div className="program">
-        <FileTree files={files} onClickFile={handleOnClickFile} />
+        <FileTree
+          files={files.filter((file) => !file.isDir)}
+          onClickFile={handleOnClickFile}
+        />
         <div className="editor">
           <Tabs
             selectedFileId={selectedFile?.id}
-            files={files}
+            files={openFiles}
             onClickFileTap={handleOnClickFile}
+            onClickBtn={handleCloseFile}
           />
           <CodingRoom file={selectedFile} minHeight={500} minWidth={750} />
         </div>
