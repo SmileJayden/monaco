@@ -1,6 +1,6 @@
 const path = require('path');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const HTMLplugin = require('html-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
 
@@ -9,7 +9,7 @@ module.exports = {
   entry: path.join(__dirname, 'index.tsx'),
   output: {
     path: path.resolve(__dirname, 'public'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
   },
   module: {
     rules: [

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import '~/assets/css/main.css';
 import {} from 'styled-components/cssprop';
 import styled from 'styled-components';
@@ -31,7 +31,7 @@ const App = () => {
     undefined
   );
 
-  const uploadFile = (e: ChangeEvent<HTMLInputElement>): void => {
+  const uploadFile = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
     setFiles([]);
     const zipFiles = e.target.files;
     if (zipFiles)
@@ -56,7 +56,7 @@ const App = () => {
             throw new Error(err);
           });
       }
-  };
+  }, []);
 
   const handleDownLoadFile = (): void => {
     console.log(files);

@@ -19,6 +19,29 @@ const CodingRoomWrapper = styled.div<CodingRoomWrapperProps>`
   min-width: ${(props) => props.minWidth}px;
 `;
 
+const getEditorLang = (fileName: string | undefined): string => {
+  if (!fileName) return '';
+  const extension = fileName!.split('.').pop();
+  switch (extension) {
+    case 'js':
+    case 'jsx':
+      return 'javascript';
+    case 'ts':
+    case 'tsx':
+      return 'typescript';
+    case 'css':
+      return 'text/css';
+    case 'scss':
+      return 'text/scss';
+    case 'html':
+      return 'text/html';
+    case 'py':
+      return 'python';
+    default:
+      return '';
+  }
+};
+
 const CodingRoom: React.FC<CodingRoomProps> = ({
   minHeight,
   minWidth,
@@ -26,27 +49,6 @@ const CodingRoom: React.FC<CodingRoomProps> = ({
 }) => {
   const monacoEditorRef = useRef<HTMLDivElement>(null);
   let monacoEditor: IStandaloneCodeEditor | null = null;
-
-  const getEditorLang = (fileName: string | undefined): string => {
-    if (!fileName) return '';
-    const extension = fileName!.split('.').pop();
-    switch (extension) {
-      case 'js':
-      case 'jsx':
-        return 'javascript';
-      case 'ts':
-      case 'tsx':
-        return 'typescript';
-      case 'css':
-        return 'text/css';
-      case 'html':
-        return 'text/html';
-      case 'py':
-        return 'python';
-      default:
-        return '';
-    }
-  };
 
   useEffect(() => {
     if (monacoEditorRef.current) {

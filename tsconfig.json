@@ -2,13 +2,14 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "es6",
+    "module": "commonjs",
     "moduleResolution": "Node",
     "allowJs": true,
     "target": "es5" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
     "sourceMap": true,
     "lib": [
       "esnext",
+      "es5",
       "dom"
     ] /* Specify library files to be included in the compilation. */,
     "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
