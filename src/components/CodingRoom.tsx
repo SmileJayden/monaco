@@ -5,6 +5,7 @@ import { editor } from 'monaco-editor';
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import { FileType } from '~/types';
 import { getFileExtension } from '~/utils';
+import { decode } from 'js-base64';
 
 interface CodingRoomProps {
   file: FileType;
@@ -60,7 +61,7 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
   useEffect(() => {
     if (monacoEditorRef.current) {
       monacoEditor = monaco.editor.create(monacoEditorRef.current, {
-        value: file.content,
+        value: decode(file.content),
         language: getEditorLang(getFileExtension(file.name)),
         theme: 'vs-dark',
         scrollBeyondLastLine: false,
@@ -78,7 +79,7 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
     });
 
     if (file && file.content && imgRef.current) {
-      imgRef.current.src = 'data:image/jpeg;base64,' + btoa(file.content);
+      imgRef.current.src = 'data:image;base64,' + file.content;
     }
 
     return () => {

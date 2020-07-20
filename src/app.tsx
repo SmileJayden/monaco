@@ -61,7 +61,7 @@ const App = () => {
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
               // TODO: calibrate binarystring, string , .md file .. extra
-              file.async('binarystring').then((content) => {
+              file.async('base64').then((content) => {
                 setFiles((prevState: FileType[]) => [
                   ...prevState,
                   {
