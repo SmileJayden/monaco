@@ -11,6 +11,8 @@ import CodingRoom from '~/components/CodingRoom';
 import { FileType } from '~/types';
 import { getFileExtension, getIsEditable } from '~/utils';
 import FileSaver from 'file-saver';
+import { encode } from 'js-base64';
+import debounce from 'lodash/fp/debounce';
 
 const AppWrapper = styled.div`
   position: relative;
@@ -60,7 +62,6 @@ const App = () => {
         JSZip.loadAsync(zipFiles[i])
           .then((zip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
-              // TODO: calibrate binarystring, string , .md file .. extra
               file.async('base64').then((content) => {
                 setFiles((prevState: FileType[]) => [
                   ...prevState,
@@ -81,6 +82,8 @@ const App = () => {
       }
     }
   }, []);
+
+  console.log('rerender app');
 
   const handleDownLoadFile = (): void => {
     console.log(files);
@@ -125,6 +128,16 @@ const App = () => {
     );
   };
 
+  const handleChange = useCallback(
+    debounce(1000, (updatedContent: string) => {
+      const editedFile = files.find((file) => file.id === selectedFile?.id);
+      if (editedFile) {
+        editedFile.content = encode(updatedContent);
+      }
+    }),
+    [files]
+  );
+
   return (
     <AppWrapper>
       <FileLoadHandler
@@ -154,7 +167,7 @@ const App = () => {
                   }`}
                   key={`coding-room-${openFile.id}`}
                 >
-                  <CodingRoom file={openFile} />
+                  <CodingRoom file={openFile} change={handleChange} />
                 </div>
               );
             })}

@@ -9,6 +9,7 @@ import { decode } from 'js-base64';
 
 interface CodingRoomProps {
   file: FileType;
+  change: (e: string) => void;
 }
 
 interface CodingRoomWrapperProps {
@@ -53,10 +54,22 @@ const getEditorLang = (fileExtension: string | undefined): string => {
   }
 };
 
-const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
+const CodingRoom: React.FC<CodingRoomProps> = ({ file, change }) => {
   const monacoEditorRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   let monacoEditor: IStandaloneCodeEditor | null = null;
+
+  useEffect(() => {
+    const resize = () => {
+      if (monacoEditor) {
+        monacoEditor.layout({ height: 0, width: 0 });
+        monacoEditor.layout();
+      }
+    };
+    window.addEventListener('resize', resize);
+    setTimeout(() => resize); // push to next tick
+    return () => window.removeEventListener('resize', resize);
+  });
 
   useEffect(() => {
     if (monacoEditorRef.current) {
@@ -78,6 +91,10 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
       },
     });
 
+    monacoEditor?.onDidChangeModelContent(() => {
+      if (monacoEditor && change) change(monacoEditor.getValue());
+    });
+
     if (file && file.content && imgRef.current) {
       imgRef.current.src = 'data:image;base64,' + file.content;
     }
@@ -89,7 +106,7 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file }) => {
   }, [file]);
 
   return (
-    <CodingRoomWrapper editable={!!file.isEditable}>
+    <CodingRoomWrapper editable={file.isEditable}>
       {file.isEditable ? (
         <div ref={monacoEditorRef} id="monaco-editor" />
       ) : (
