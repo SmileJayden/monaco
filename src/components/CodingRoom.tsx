@@ -9,7 +9,7 @@ import { decode } from 'js-base64';
 
 interface CodingRoomProps {
   file: FileType;
-  change: (e: string) => void;
+  change: (updatedValue: string, fileId: string) => void;
 }
 
 interface CodingRoomWrapperProps {
@@ -59,6 +59,8 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file, change }) => {
   const imgRef = useRef<HTMLImageElement>(null);
   let monacoEditor: IStandaloneCodeEditor | null = null;
 
+  console.log(`CodingRoom rerender ${file.name}`);
+
   useEffect(() => {
     const resize = () => {
       if (monacoEditor) {
@@ -92,7 +94,7 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file, change }) => {
     });
 
     monacoEditor?.onDidChangeModelContent(() => {
-      if (monacoEditor && change) change(monacoEditor.getValue());
+      if (monacoEditor && change) change(monacoEditor.getValue(), file.id);
     });
 
     if (file && file.content && imgRef.current) {

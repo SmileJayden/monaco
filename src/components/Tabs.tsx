@@ -46,6 +46,7 @@ const Tabs: React.FC<TabsProps> = ({
   onClickFileTap,
   onClickBtn,
 }) => {
+  console.log('Tabs rerender');
   return (
     <TabsWrapper>
       {files.map((file: FileType) => (
@@ -61,4 +62,6 @@ const Tabs: React.FC<TabsProps> = ({
   );
 };
 
-export default Tabs;
+const MemoizedTabs = React.memo(Tabs);
+
+export default MemoizedTabs;

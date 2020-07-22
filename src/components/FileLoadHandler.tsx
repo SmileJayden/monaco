@@ -20,6 +20,8 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
   handleChangeFile,
   handleClickBtn,
 }) => {
+  console.log('FileLoadHandler rerender');
+
   return (
     <FileLoadHandlerWrapper>
       <input type="file" multiple onChange={(e) => handleChangeFile(e)} />
@@ -28,4 +30,6 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
   );
 };
 
-export default FileLoadHandler;
+const MemoizedFileLoadHandler = React.memo(FileLoadHandler);
+
+export default MemoizedFileLoadHandler;

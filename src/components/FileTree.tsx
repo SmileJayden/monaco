@@ -30,6 +30,7 @@ const FileTreeWrapper = styled.div`
 `;
 
 const FileTree: React.FC<FileTreeProps> = ({ files, onClickFile }) => {
+  console.log('FileTree rerender');
   return (
     <FileTreeWrapper>
       <h2>File Tree</h2>
