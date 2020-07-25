@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { FileType } from '~/types';
+import { FileType, FolderType } from '~/types';
+import FileBranch from '~/components/FileBranch';
+import FolderBranch from '~/components/FolderBranch';
 
 interface FileTreeProps {
   files: FileType[];
+  folders: FolderType[];
   onClickFile: (file: FileType) => void;
 }
 
 const FileTreeWrapper = styled.div`
+  height: 500px;
   width: 300px;
+  overflow-y: auto;
   background-color: cornflowerblue;
   color: white;
   h2 {
@@ -16,34 +21,28 @@ const FileTreeWrapper = styled.div`
     padding: 15px;
     border-bottom: 1px solid royalblue;
   }
-  .branch-container {
-    height: 500px;
-    overflow-y: auto;
-    p {
-      padding: 10px;
-      cursor: pointer;
-      &:hover {
-        background-color: deepskyblue;
-      }
-    }
-  }
 `;
 
-const FileTree: React.FC<FileTreeProps> = ({ files, onClickFile }) => {
-  console.log('FileTree rerender');
+const FileTree: React.FC<FileTreeProps> = ({ files, folders, onClickFile }) => {
+  const handleOnClickFolder = useCallback(() => {
+    console.log('handleOnClickFolder');
+  }, []);
+
   return (
     <FileTreeWrapper>
       <h2>File Tree</h2>
       <div className={'branch-container'}>
-        {files.map((file: FileType) => {
+        {folders.map((folder: FolderType) => {
           return (
-            <p
-              key={`file-branch-${file.id}`}
-              onClick={(e) => onClickFile(file)}
-            >
-              {file.name}
-            </p>
+            <FolderBranch
+              folder={folder}
+              onClickFolder={handleOnClickFolder}
+              onClickFile={onClickFile}
+            />
           );
+        })}
+        {files.map((file: FileType) => {
+          return <FileBranch file={file} onClickFile={onClickFile} />;
         })}
       </div>
     </FileTreeWrapper>

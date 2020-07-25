@@ -10,7 +10,7 @@ import FileLoadHandler from '~/components/FileLoadHandler';
 import FileTree from '~/components/FileTree';
 import Tabs from '~/components/Tabs';
 import CodingRoom from '~/components/CodingRoom';
-import { FileType } from '~/types';
+import { FileType, FolderType } from '~/types';
 import { getFileExtension, getIsViewable } from '~/utils';
 
 const AppWrapper = styled.div`
@@ -46,6 +46,7 @@ const AppWrapper = styled.div`
 
 const App = () => {
   const [files, setFiles] = useState<FileType[]>([]);
+  const [folders, setFolders] = useState<FolderType[]>([]);
   const [openFiles, setOpenFiles] = useState<FileType[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileType | undefined>(
     undefined
@@ -55,24 +56,36 @@ const App = () => {
     const zipFiles: FileList | null = e.target.files;
     if (zipFiles && zipFiles.length > 0) {
       setFiles([]);
+      setFolders([]);
       setOpenFiles([]);
       setSelectedFile(undefined);
       for (let i = 0; i < zipFiles.length; i++) {
         JSZip.loadAsync(zipFiles[i])
           .then((zip: JSZip) => {
             zip.forEach((relativePath, file: JSZipObject) => {
-              file.async('base64').then((content) => {
-                setFiles((prevState: FileType[]) => [
+              if (file.dir) {
+                setFolders((prevState: FolderType[]) => [
                   ...prevState,
                   {
-                    isDir: file.dir,
                     name: file.name,
-                    extension: getFileExtension(file.name),
                     id: uuid(),
-                    content,
+                    childFiles: [],
+                    childFolders: [],
                   },
                 ]);
-              });
+              } else {
+                file.async('base64').then((content) => {
+                  setFiles((prevState: FileType[]) => [
+                    ...prevState,
+                    {
+                      name: file.name,
+                      extension: getFileExtension(file.name),
+                      id: uuid(),
+                      content,
+                    },
+                  ]);
+                });
+              }
             });
           })
           .catch((err) => {
@@ -167,7 +180,8 @@ const App = () => {
       />
       <div className="program">
         <FileTree
-          files={files.filter((file) => !file.isDir)}
+          files={files}
+          folders={folders}
           onClickFile={handleOnClickFile}
         />
         <div className="editor">

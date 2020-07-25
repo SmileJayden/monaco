@@ -27,7 +27,6 @@ const getIsDecodable = (content: string): boolean => {
 };
 
 const getIsViewable = (file: FileType): boolean => {
-  console.log('file.extension', file.extension, getIsImg(file.extension));
   return getIsDecodable(file.content) || getIsImg(file.extension);
 };
 
