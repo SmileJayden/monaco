@@ -28,12 +28,7 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
   return (
     <>
       <FolderBranchWrapper>
-        <p
-          key={`folder-branch-${folder.id}`}
-          onClick={(e) => onClickFolder(folder)}
-        >
-          {folder.name}
-        </p>
+        <p onClick={(e) => onClickFolder(folder)}>{folder.name}</p>
       </FolderBranchWrapper>
       {folder.isOpened && (
         <>
@@ -42,6 +37,7 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
               folder={childFolder}
               onClickFolder={onClickFolder}
               onClickFile={onClickFile}
+              key={`folder-branch-${folder.id}`}
             />
           ))}
           {folder.childFiles.map((childFile: FileType) => (

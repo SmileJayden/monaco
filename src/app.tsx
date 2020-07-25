@@ -11,7 +11,7 @@ import FileTree from '~/components/FileTree';
 import Tabs from '~/components/Tabs';
 import CodingRoom from '~/components/CodingRoom';
 import { FileType, FolderType } from '~/types';
-import { getFileExtension, getIsViewable } from '~/utils';
+import { getFileExtension, getIsViewable, uploadZipFile } from '~/utils';
 
 const AppWrapper = styled.div`
   position: relative;
@@ -52,49 +52,43 @@ const App = () => {
     undefined
   );
 
-  const uploadFile = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
-    const zipFiles: FileList | null = e.target.files;
-    if (zipFiles && zipFiles.length > 0) {
-      setFiles([]);
-      setFolders([]);
-      setOpenFiles([]);
-      setSelectedFile(undefined);
-      for (let i = 0; i < zipFiles.length; i++) {
-        JSZip.loadAsync(zipFiles[i])
-          .then((zip: JSZip) => {
-            zip.forEach((relativePath, file: JSZipObject) => {
-              if (file.dir) {
-                setFolders((prevState: FolderType[]) => [
-                  ...prevState,
-                  {
-                    name: file.name,
-                    id: uuid(),
-                    childFiles: [],
-                    childFolders: [],
-                  },
-                ]);
-              } else {
-                file.async('base64').then((content) => {
-                  setFiles((prevState: FileType[]) => [
-                    ...prevState,
-                    {
-                      name: file.name,
-                      extension: getFileExtension(file.name),
-                      id: uuid(),
-                      content,
-                    },
-                  ]);
-                });
-              }
+  const uploadFile = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
+      const zipFiles: FileList | null = e.target.files;
+      if (zipFiles && zipFiles.length > 0) {
+        setFiles([]);
+        setFolders([]);
+        setOpenFiles([]);
+        setSelectedFile(undefined);
+        setFolders(await uploadZipFile(zipFiles));
+        for (let i = 0; i < zipFiles.length; i++) {
+          JSZip.loadAsync(zipFiles[i])
+            .then((zip: JSZip) => {
+              zip.forEach((relativePath, file: JSZipObject) => {
+                if (!file.dir) {
+                  file.async('base64').then((content) => {
+                    setFiles((prevState: FileType[]) => [
+                      ...prevState,
+                      {
+                        name: file.name,
+                        extension: getFileExtension(file.name),
+                        id: uuid(),
+                        content,
+                      },
+                    ]);
+                  });
+                }
+              });
+            })
+            .catch((err) => {
+              toast.warning('plz select zip file');
+              throw new Error(err);
             });
-          })
-          .catch((err) => {
-            toast.warning('plz select zip file');
-            throw new Error(err);
-          });
+        }
       }
-    }
-  }, []);
+    },
+    []
+  );
 
   console.log('rerender app');
 

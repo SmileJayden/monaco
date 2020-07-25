@@ -38,11 +38,18 @@ const FileTree: React.FC<FileTreeProps> = ({ files, folders, onClickFile }) => {
               folder={folder}
               onClickFolder={handleOnClickFolder}
               onClickFile={onClickFile}
+              key={`folder-branch-${folder.id}`}
             />
           );
         })}
         {files.map((file: FileType) => {
-          return <FileBranch file={file} onClickFile={onClickFile} />;
+          return (
+            <FileBranch
+              file={file}
+              onClickFile={onClickFile}
+              key={`file-branch-${file.id}`}
+            />
+          );
         })}
       </div>
     </FileTreeWrapper>

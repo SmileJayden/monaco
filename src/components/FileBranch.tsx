@@ -21,9 +21,7 @@ const FileBranchWrapper = styled.div`
 const FileBranch: React.FC<FileBranchProps> = ({ file, onClickFile }) => {
   return (
     <FileBranchWrapper>
-      <p key={`file-branch-${file!.id}`} onClick={(e) => onClickFile(file!)}>
-        {file!.name}
-      </p>
+      <p onClick={(e) => onClickFile(file!)}>{file!.name}</p>
     </FileBranchWrapper>
   );
 };
