@@ -11,7 +11,7 @@ import FileTree from '~/components/FileTree';
 import Tabs from '~/components/Tabs';
 import CodingRoom from '~/components/CodingRoom';
 import { FileType } from '~/types';
-import { getFileExtension, getIsEditable } from '~/utils';
+import { getFileExtension, getIsViewable } from '~/utils';
 
 const AppWrapper = styled.div`
   position: relative;
@@ -66,8 +66,8 @@ const App = () => {
                   ...prevState,
                   {
                     isDir: file.dir,
-                    isEditable: getIsEditable(getFileExtension(file.name)),
                     name: file.name,
+                    extension: getFileExtension(file.name),
                     id: uuid(),
                     content,
                   },
@@ -76,6 +76,7 @@ const App = () => {
             });
           })
           .catch((err) => {
+            toast.warning('plz select zip file');
             throw new Error(err);
           });
       }
@@ -111,8 +112,15 @@ const App = () => {
 
   const handleOnClickFile = useCallback(
     (file: FileType): void => {
+      if (!getIsViewable(file)) {
+        toast.warning('This file is not viewable');
+        return;
+      }
       if (!openFiles.some((f) => f.id === file.id))
-        setOpenFiles((prevState: FileType[]) => [...prevState, file]);
+        setOpenFiles((prevState: FileType[]): FileType[] => [
+          ...prevState,
+          file,
+        ]);
       setSelectedFile(file);
     },
     [openFiles]
@@ -146,7 +154,7 @@ const App = () => {
           return file;
         });
       });
-      toast('content is saved ^^@');
+      toast.info('content is saved ^^@');
     }),
     []
   );

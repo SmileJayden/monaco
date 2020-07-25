@@ -4,6 +4,6 @@ export interface FileType {
   name: string;
   content: string;
   isDir: boolean;
-  isEditable: boolean;
+  extension: string;
   id: string;
 }

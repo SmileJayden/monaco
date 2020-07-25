@@ -4,7 +4,7 @@ import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import { FileType } from '~/types';
-import { getFileExtension } from '~/utils';
+import { getFileExtension, getIsImg } from '~/utils';
 import { decode } from 'js-base64';
 
 interface CodingRoomProps {
@@ -13,12 +13,12 @@ interface CodingRoomProps {
 }
 
 interface CodingRoomWrapperProps {
-  editable: boolean;
+  isImg: boolean;
 }
 
 const CodingRoomWrapper = styled.div<CodingRoomWrapperProps>`
   background-color: #333333;
-  display: ${(props) => (props.editable ? 'block' : 'flex')};
+  display: ${(props) => (props.isImg ? 'flex' : 'block')};
 
   &,
   #monaco-editor {
@@ -108,11 +108,11 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file, change }) => {
   }, [file]);
 
   return (
-    <CodingRoomWrapper editable={file.isEditable}>
-      {file.isEditable ? (
-        <div ref={monacoEditorRef} id="monaco-editor" />
-      ) : (
+    <CodingRoomWrapper isImg={getIsImg(file.extension)}>
+      {getIsImg(file.extension) ? (
         <img ref={imgRef} alt={'This is not editable'} />
+      ) : (
+        <div ref={monacoEditorRef} id="monaco-editor" />
       )}
     </CodingRoomWrapper>
   );
