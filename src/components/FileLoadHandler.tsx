@@ -24,7 +24,7 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
 
   return (
     <FileLoadHandlerWrapper>
-      <input type="file" multiple onChange={(e) => handleChangeFile(e)} />
+      <input type="file" onChange={(e) => handleChangeFile(e)} />
       <button onClick={(e) => handleClickBtn(e)}>Download ZIP</button>
     </FileLoadHandlerWrapper>
   );

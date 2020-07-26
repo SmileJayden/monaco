@@ -14,6 +14,7 @@ const FolderBranchWrapper = styled.div`
   p {
     padding: 10px;
     cursor: pointer;
+    overflow-x: auto;
   }
   &:hover {
     background-color: #03fcf0;
@@ -28,7 +29,10 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
   return (
     <>
       <FolderBranchWrapper>
-        <p onClick={(e) => onClickFolder(folder)}>{folder.name}</p>
+        <p onClick={(e) => onClickFolder(folder)}>
+          {'>'.repeat(folder.depth)}
+          {folder.displayName}
+        </p>
       </FolderBranchWrapper>
       {folder.isOpened && (
         <>

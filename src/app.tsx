@@ -1,17 +1,21 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import JSZip, { JSZipObject } from 'jszip';
-import { v4 as uuid } from 'uuid';
-import FileSaver from 'file-saver';
-import { encode } from 'js-base64';
 import debounce from 'lodash/fp/debounce';
+import cloneDeep from 'lodash/fp/cloneDeep';
 import { ToastContainer, toast } from 'react-toastify';
 import FileLoadHandler from '~/components/FileLoadHandler';
 import FileTree from '~/components/FileTree';
 import Tabs from '~/components/Tabs';
 import CodingRoom from '~/components/CodingRoom';
 import { FileType, FolderType } from '~/types';
-import { getFileExtension, getIsViewable, uploadZipFile } from '~/utils';
+import {
+  findTargetFile,
+  getFileExtension,
+  getIsViewable,
+  uploadZipFile,
+} from '~/utils';
+import { v4 as uuid } from 'uuid';
+import { encode } from 'js-base64';
 
 const AppWrapper = styled.div`
   position: relative;
@@ -47,6 +51,9 @@ const AppWrapper = styled.div`
 const App = () => {
   const [files, setFiles] = useState<FileType[]>([]);
   const [folders, setFolders] = useState<FolderType[]>([]);
+  const [rootFolder, setRootFolder] = useState<FolderType | undefined>(
+    undefined
+  );
   const [openFiles, setOpenFiles] = useState<FileType[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileType | undefined>(
     undefined
@@ -54,36 +61,14 @@ const App = () => {
 
   const uploadFile = useCallback(
     async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      const zipFiles: FileList | null = e.target.files;
-      if (zipFiles && zipFiles.length > 0) {
-        setFiles([]);
-        setFolders([]);
-        setOpenFiles([]);
-        setSelectedFile(undefined);
-        setFolders(await uploadZipFile(zipFiles));
-        for (let i = 0; i < zipFiles.length; i++) {
-          JSZip.loadAsync(zipFiles[i])
-            .then((zip: JSZip) => {
-              zip.forEach((relativePath, file: JSZipObject) => {
-                if (!file.dir) {
-                  file.async('base64').then((content) => {
-                    setFiles((prevState: FileType[]) => [
-                      ...prevState,
-                      {
-                        name: file.name,
-                        extension: getFileExtension(file.name),
-                        id: uuid(),
-                        content,
-                      },
-                    ]);
-                  });
-                }
-              });
-            })
-            .catch((err) => {
-              toast.warning('plz select zip file');
-              throw new Error(err);
-            });
+      const zipFile: File | undefined = e.target.files?.[0];
+
+      if (zipFile) {
+        const rootFolder: FolderType = await uploadZipFile(zipFile);
+        if (rootFolder) {
+          setRootFolder(rootFolder);
+          setFolders(rootFolder.childFolders);
+          setFiles(rootFolder.childFiles);
         }
       }
     },
@@ -93,7 +78,6 @@ const App = () => {
   console.log('rerender app');
 
   const handleDownLoadFile = (): void => {
-    console.log(files);
     // const zip = JSZip();
     // zip.file('Hello.tsx', 'Hello world\n');
     // zip.file('Hello1.txt', 'Hello world\n');
@@ -144,25 +128,33 @@ const App = () => {
       setOpenFiles((prevState: FileType[]) =>
         prevState.filter((f) => f.id !== file.id)
       );
+      if (rootFolder) {
+        setFolders(rootFolder.childFolders);
+        setFiles(rootFolder.childFiles);
+      }
     },
-    [selectedFile, openFiles]
+    [selectedFile, openFiles, rootFolder]
   );
 
   const handleChange = useCallback(
-    debounce(500, (updatedContent: string, fileId: string) => {
-      setFiles((prevState: FileType[]) => {
-        return prevState.map((file) => {
-          if (file.id === fileId) {
-            return {
-              ...file,
-              content: encode(updatedContent),
-            };
+    debounce(
+      500,
+      (updatedContent: string, fileId: string, fileName: string) => {
+        setRootFolder((prevState) => {
+          const rootFolderClone: FolderType | undefined = cloneDeep(prevState);
+          if (rootFolderClone) {
+            const targetFile: FileType | undefined = findTargetFile(
+              rootFolderClone,
+              fileName,
+              fileId
+            );
+            if (targetFile) targetFile.content = encode(updatedContent);
           }
-          return file;
+          return rootFolderClone;
         });
-      });
-      toast.info('content is saved ^^@');
-    }),
+        toast.info('content is saved ^^@');
+      }
+    ),
     []
   );
 

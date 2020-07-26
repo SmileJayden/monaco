@@ -12,6 +12,7 @@ const FileBranchWrapper = styled.div`
   p {
     padding: 10px;
     cursor: pointer;
+    overflow-x: auto;
   }
   &:hover {
     background-color: #03fcf0;
@@ -21,7 +22,10 @@ const FileBranchWrapper = styled.div`
 const FileBranch: React.FC<FileBranchProps> = ({ file, onClickFile }) => {
   return (
     <FileBranchWrapper>
-      <p onClick={(e) => onClickFile(file!)}>{file!.name}</p>
+      <p onClick={(e) => onClickFile(file!)}>
+        {'>'.repeat(file.depth)}
+        {file!.displayName}
+      </p>
     </FileBranchWrapper>
   );
 };

@@ -1,6 +1,6 @@
-import { decode } from 'js-base64';
+import { decode, encode } from 'js-base64';
 import { FileType, FolderType } from '~/types';
-import JSZip, { JSZipObject } from 'jszip';
+import JSZip from 'jszip';
 import { v4 as uuid } from 'uuid';
 
 const getFileExtension = (fileName: string | undefined): string => {
@@ -32,47 +32,136 @@ const getIsViewable = (file: FileType): boolean => {
   return getIsDecodable(file.content) || getIsImg(file.extension);
 };
 
-const uploadZipFile = async (zipFiles: FileList): Promise<FolderType[]> => {
-  const res: any[] = [];
+const uploadZipFile = async (zipFile: File): Promise<FolderType> => {
+  const rootFolder: FolderType = {
+    name: '/',
+    displayName: '/',
+    id: uuid(),
+    childFiles: [],
+    childFolders: [],
+    depth: 0,
+  };
 
-  for (let i = 0; i < zipFiles.length; i++) {
-    const loadedZip: JSZip = await JSZip.loadAsync(zipFiles[i]);
-    console.dir(loadedZip.files);
-    for (const [key, value] of Object.entries(loadedZip.files)) {
-      console.log(`${key}: ${value}`);
-      const res2 = await value.async('base64');
-      console.log('res2', res2);
-      if (value.dir)
-        res.push({
-          name: key,
+  const loadedZip: JSZip = await JSZip.loadAsync(zipFile);
+  for (const [key, value] of Object.entries(loadedZip.files)) {
+    const targetFolderName: string = parseParentFolderName(
+      value.name,
+      value.dir
+    );
+
+    const targetFolder = findTargetFolder(rootFolder, targetFolderName);
+
+    if (targetFolder) {
+      const displayName = parseDisplayName(value.name, value.dir);
+      const depth = getDepth(value.name, value.dir);
+      if (value.dir) {
+        targetFolder.childFolders.push({
+          name: value.name,
+          displayName,
           id: uuid(),
           childFiles: [],
           childFolders: [],
+          isOpened: true,
+          depth,
         });
+      } else {
+        const content = await value.async('base64');
+        targetFolder.childFiles.push({
+          displayName,
+          name: value.name,
+          id: uuid(),
+          content,
+          extension: getFileExtension(value.name),
+          depth,
+        });
+      }
     }
-    // for (let j = 0; j < ; j++) {
-    //
-    // }
-    // console.dir('loadedZip', JSON.stringify(loadedZip, null, 4));
-    // loadedZip.files.map((x) => {
-    //   console.log('loadedZip', x);
-    // });
-    // console.log('loadedZip', JSON.stringify(loadedZip, null, 4));
-    // loadedZip.forEach(async (relativePath: string, file: JSZipObject) => {
-    //   const fileGet = await file.async('base64');
-    //   // console.log('fileGet', JSON.stringify(fileGet, null, 4));
-    //   res.push(fileGet);
-    // });
-    // res.push(await JSZip.loadAsync(zipFiles[i]).then(((zip:JSZip) => {
-    //   zip.forEach((relativePath:string, file: JSZipObject) => {
-    //
-    //   })
-    // } )));
   }
 
-  console.log('res', res);
+  return rootFolder;
+};
 
-  return res;
+const findTargetFolder = (
+  rootFolder: FolderType,
+  folderName: string
+): FolderType | undefined => {
+  if (!isFolderName(folderName))
+    throw new Error('Input arg folderName is not correct');
+
+  if (folderName === '/') return rootFolder;
+
+  const paths: string[] = folderName.split('/');
+  paths.pop();
+
+  let targetFolder: FolderType | undefined = rootFolder;
+  while (paths.length > 0) {
+    const path = paths.shift();
+    if (!targetFolder) {
+      return undefined;
+    }
+    targetFolder = targetFolder.childFolders.find(
+      (childFolder) => childFolder.displayName === path
+    );
+  }
+
+  return targetFolder;
+};
+
+const findTargetFile = (
+  rootFolder: FolderType,
+  fileName: string,
+  fileId: string
+): FileType | undefined => {
+  const paths: string[] = fileName.split('/');
+
+  let targetPosition = rootFolder;
+
+  while (paths.length > 0) {
+    const path = paths.shift();
+    if (!targetPosition) {
+      continue;
+    }
+    if (paths.length < 1) {
+      return targetPosition.childFiles.find((file) => file.id === fileId);
+    }
+    targetPosition = targetPosition.childFolders.find(
+      (childFolder) => childFolder.displayName === path
+    )!;
+  }
+
+  return undefined;
+};
+
+const isFolderName = (folderName: string): boolean => {
+  return /\/$/.test(folderName);
+};
+
+const parseParentFolderName = (targetName: string, isDir: boolean): string => {
+  const splitedName = targetName.split('/');
+  if (isDir) {
+    if (!isFolderName(targetName))
+      throw new Error('Input arg folderName is not correct');
+    splitedName.pop();
+    splitedName.pop();
+  } else {
+    splitedName.pop();
+  }
+  return splitedName.join('/') + '/';
+};
+
+const parseDisplayName = (targetName: string, isDir: boolean): string => {
+  const splitedName = targetName.split('/');
+  if (isDir) {
+    if (!isFolderName(targetName))
+      throw new Error('Input arg folderName is not correct');
+    splitedName.pop();
+    return splitedName.pop()!;
+  }
+  return splitedName.pop()!;
+};
+
+const getDepth = (fileName: string, isDir: boolean): number => {
+  return isDir ? fileName.split('/').length - 1 : fileName.split('/').length;
 };
 
 export {
@@ -81,4 +170,6 @@ export {
   getIsDecodable,
   getIsViewable,
   uploadZipFile,
+  findTargetFolder,
+  findTargetFile,
 };
