@@ -10,6 +10,7 @@
     "build": "webpack --mode=production"
   },
   "dependencies": {
+    "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.6.0",
     "file-loader": "^6.0.0",
     "file-saver": "^2.0.2",
@@ -25,7 +26,8 @@
     "rxjs": "^6.6.0",
     "style-loader": "^1.2.1",
     "styled-components": "^5.1.1",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "webpack-visualizer-plugin": "^0.1.11"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
