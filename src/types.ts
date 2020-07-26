@@ -16,3 +16,8 @@ export interface FolderType {
   childFolders: FolderType[];
   depth: number;
 }
+
+export interface readFileType {
+  name: string;
+  content: string;
+}

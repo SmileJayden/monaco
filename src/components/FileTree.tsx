@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FileType, FolderType } from '~/types';
 import FileBranch from '~/components/FileBranch';
 import FolderBranch from '~/components/FolderBranch';
+import { FileType, FolderType } from '~/types';
 
 interface FileTreeProps {
   files: FileType[];

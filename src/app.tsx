@@ -2,6 +2,10 @@ import React, { ChangeEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import debounce from 'lodash/fp/debounce';
 import cloneDeep from 'lodash/fp/cloneDeep';
+import { v4 as uuid } from 'uuid';
+import { encode } from 'js-base64';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import FileLoadHandler from '~/components/FileLoadHandler';
 import FileTree from '~/components/FileTree';
@@ -12,10 +16,9 @@ import {
   findTargetFile,
   findTargetFolder,
   getIsViewable,
+  readFilesRecursive,
   uploadZipFile,
 } from '~/utils';
-import { v4 as uuid } from 'uuid';
-import { encode } from 'js-base64';
 
 const AppWrapper = styled.div`
   position: relative;
@@ -64,6 +67,12 @@ const App = () => {
       const zipFile: File | undefined = e.target.files?.[0];
 
       if (zipFile) {
+        setFiles([]);
+        setFolders([]);
+        setRootFolder(undefined);
+        setOpenFiles([]);
+        setSelectedFile(undefined);
+
         const rootFolder: FolderType = await uploadZipFile(zipFile);
         if (rootFolder) {
           setRootFolder(rootFolder);
@@ -75,31 +84,27 @@ const App = () => {
     []
   );
 
-  console.log('rerender app');
+  const handleDownLoadFile = useCallback((): void => {
+    const zip = JSZip();
 
-  const handleDownLoadFile = (): void => {
-    // const zip = JSZip();
-    // zip.file('Hello.tsx', 'Hello world\n');
-    // zip.file('Hello1.txt', 'Hello world\n');
-    // zip.file('Hello3.js', 'Hello woasdfrld\n');
-    // zip.file('Hello3.txt', 'Hello worasdfld\n');
-    // zip.file('Hello4.ts', 'Hello worasdfasdffld\n');
-    // zip.file('ttt/Hello4.txt', 'Hello woadsfrasdfasdffld\n');
-    // zip.folder('folder_1/');
-    // zip.file('folder_1/folder1test.txt', 'Hello woadsfrasdfasdffld\n');
-    // zip.folder('folder_23/askdjf/sadghdk/');
-    // zip.folder('folder_yesslash/');
-    // zip.folder('folder_noslash');
-    //
-    // zip
-    //   .generateAsync({ type: 'blob' })
-    //   .then((blob) => {
-    //     FileSaver.saveAs(blob, 'hello.zip');
-    //   })
-    //   .catch((err) => {
-    //     throw new Error(err);
-    //   });
-  };
+    if (rootFolder) {
+      const res = readFilesRecursive(rootFolder);
+      res.forEach((file) =>
+        zip.file(file.name, file.content, { base64: true })
+      );
+
+      zip
+        .generateAsync({
+          type: 'blob',
+          compression: 'DEFLATE',
+        })
+        .then((content) => {
+          FileSaver.saveAs(content, 'hello.zip');
+        });
+    } else {
+      toast.warning('download failed');
+    }
+  }, [rootFolder]);
 
   const handleOnClickFolder = useCallback(
     (folder: FolderType) => {

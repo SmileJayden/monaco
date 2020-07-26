@@ -1,7 +1,7 @@
-import { decode, encode } from 'js-base64';
-import { FileType, FolderType } from '~/types';
+import { decode } from 'js-base64';
 import JSZip from 'jszip';
 import { v4 as uuid } from 'uuid';
+import { FileType, FolderType, readFileType } from '~/types';
 
 const getFileExtension = (fileName: string | undefined): string => {
   const res: string | undefined = fileName?.split('.').pop();
@@ -165,6 +165,18 @@ const getDepth = (fileName: string, isDir: boolean): number => {
   return isDir ? fileName.split('/').length - 1 : fileName.split('/').length;
 };
 
+const readFilesRecursive = (rootFolder: FolderType): readFileType[] => {
+  const res: readFileType[] = [];
+  rootFolder.childFiles.map((file) =>
+    res.push({ name: file.name, content: file.content })
+  );
+  rootFolder.childFolders.forEach((folder) => {
+    readFilesRecursive(folder).forEach((f) => res.push(f));
+  });
+
+  return res;
+};
+
 export {
   getFileExtension,
   getIsImg,
@@ -173,4 +185,5 @@ export {
   uploadZipFile,
   findTargetFolder,
   findTargetFile,
+  readFilesRecursive,
 };

@@ -1,11 +1,11 @@
 import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { getFileExtension, getIsImg } from '~/utils';
+import { decode } from 'js-base64';
 import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor';
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import { FileType } from '~/types';
-import { getFileExtension, getIsImg } from '~/utils';
-import { decode } from 'js-base64';
 
 interface CodingRoomProps {
   file: FileType;
