@@ -26,8 +26,7 @@
     "rxjs": "^6.6.0",
     "style-loader": "^1.2.1",
     "styled-components": "^5.1.1",
-    "uuid": "^8.2.0",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "uuid": "^8.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

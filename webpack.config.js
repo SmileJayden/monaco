@@ -2,7 +2,6 @@ const path = require('path');
 const HTMLplugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-var Visualizer = require('webpack-visualizer-plugin');
 
 module.exports = (env, options) => {
   const config = {
@@ -53,7 +52,6 @@ module.exports = (env, options) => {
       new MonacoWebpackPlugin({
         languages: ['javascript', 'css', 'html', 'typescript'],
       }),
-      new Visualizer(),
     ],
   };
 
