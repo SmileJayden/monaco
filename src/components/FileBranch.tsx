@@ -7,10 +7,14 @@ interface FileBranchProps {
   onClickFile: (file: FileType) => void;
 }
 
-const FileBranchWrapper = styled.div`
+interface FileBranchWrapper {
+  depth: number;
+}
+
+const FileBranchWrapper = styled.div<FileBranchWrapper>`
   background-color: #0356fc;
   p {
-    padding: 10px;
+    padding: 10px 10px 10px ${(props) => props.depth * 10}px;
     cursor: pointer;
     overflow-x: auto;
   }
@@ -21,11 +25,8 @@ const FileBranchWrapper = styled.div`
 
 const FileBranch: React.FC<FileBranchProps> = ({ file, onClickFile }) => {
   return (
-    <FileBranchWrapper>
-      <p onClick={(e) => onClickFile(file!)}>
-        {'>'.repeat(file.depth)}
-        {file!.displayName}
-      </p>
+    <FileBranchWrapper depth={file.depth}>
+      <p onClick={(e) => onClickFile(file!)}>{file!.displayName}</p>
     </FileBranchWrapper>
   );
 };

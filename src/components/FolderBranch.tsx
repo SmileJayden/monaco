@@ -9,12 +9,21 @@ interface FolderBranchProps {
   onClickFile: (file: FileType) => void;
 }
 
-const FolderBranchWrapper = styled.div`
+interface FolderBranchWrapperProps {
+  isOpened: boolean;
+  depth: number;
+}
+
+const FolderBranchWrapper = styled.div<FolderBranchWrapperProps>`
   background-color: #03009c;
   p {
-    padding: 10px;
+    padding: 10px 10px 10px ${(props) => props.depth * 10}px;
     cursor: pointer;
     overflow-x: auto;
+
+    &::before {
+      content: ${(props) => (props.isOpened ? "'▼'" : "'▶'")};
+    }
   }
   &:hover {
     background-color: #03fcf0;
@@ -28,11 +37,8 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
 }) => {
   return (
     <>
-      <FolderBranchWrapper>
-        <p onClick={(e) => onClickFolder(folder)}>
-          {'>'.repeat(folder.depth)}
-          {folder.displayName}
-        </p>
+      <FolderBranchWrapper isOpened={folder.isOpened} depth={folder.depth}>
+        <p onClick={(e) => onClickFolder(folder)}>{folder.displayName}</p>
       </FolderBranchWrapper>
       {folder.isOpened && (
         <>
