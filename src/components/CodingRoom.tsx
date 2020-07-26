@@ -59,8 +59,6 @@ const CodingRoom: React.FC<CodingRoomProps> = ({ file, change }) => {
   const imgRef = useRef<HTMLImageElement>(null);
   let monacoEditor: IStandaloneCodeEditor | null = null;
 
-  console.log(`CodingRoom rerender ${file.name}`);
-
   useEffect(() => {
     const resize = () => {
       if (monacoEditor) {

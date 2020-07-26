@@ -20,8 +20,6 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
   handleChangeFile,
   handleClickBtn,
 }) => {
-  console.log('FileLoadHandler rerender');
-
   return (
     <FileLoadHandlerWrapper>
       <input type="file" onChange={(e) => handleChangeFile(e)} />

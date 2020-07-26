@@ -52,6 +52,7 @@ const AppWrapper = styled.div`
 `;
 
 const App = () => {
+  const [zipFileName, setZipFileName] = useState<string>('');
   const [files, setFiles] = useState<FileType[]>([]);
   const [folders, setFolders] = useState<FolderType[]>([]);
   const [rootFolder, setRootFolder] = useState<FolderType | undefined>(
@@ -67,6 +68,7 @@ const App = () => {
       const zipFile: File | undefined = e.target.files?.[0];
 
       if (zipFile) {
+        setZipFileName(zipFile.name);
         setFiles([]);
         setFolders([]);
         setRootFolder(undefined);
@@ -99,7 +101,7 @@ const App = () => {
           compression: 'DEFLATE',
         })
         .then((content) => {
-          FileSaver.saveAs(content, 'hello.zip');
+          FileSaver.saveAs(content, zipFileName);
         });
     } else {
       toast.warning('download failed');

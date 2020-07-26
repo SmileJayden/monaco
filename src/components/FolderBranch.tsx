@@ -36,7 +36,6 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
   onClickFolder,
   onClickFile,
 }) => {
-  console.log('folder name', folder.name, 'rerender');
   return (
     <>
       <FolderBranchWrapper

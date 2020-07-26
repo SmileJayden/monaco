@@ -46,7 +46,6 @@ const Tabs: React.FC<TabsProps> = ({
   onClickFileTap,
   onClickBtn,
 }) => {
-  console.log('Tabs rerender');
   return (
     <TabsWrapper>
       {files.map((file: FileType) => (
