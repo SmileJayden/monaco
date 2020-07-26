@@ -11,7 +11,7 @@ export interface FolderType {
   name: string;
   displayName: string;
   id: string;
-  isOpened: boolean;
+  isCollapsed: boolean;
   childFiles: FileType[];
   childFolders: FolderType[];
   depth: number;

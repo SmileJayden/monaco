@@ -10,7 +10,7 @@ interface FolderBranchProps {
 }
 
 interface FolderBranchWrapperProps {
-  isOpened: boolean;
+  isCollapsed: boolean;
   depth: number;
 }
 
@@ -22,7 +22,7 @@ const FolderBranchWrapper = styled.div<FolderBranchWrapperProps>`
     overflow-x: auto;
 
     &::before {
-      content: ${(props) => (props.isOpened ? "'▼'" : "'▶'")};
+      content: ${(props) => (props.isCollapsed ? "'▶'" : "'▼'")};
     }
   }
   &:hover {
@@ -37,21 +37,28 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
 }) => {
   return (
     <>
-      <FolderBranchWrapper isOpened={folder.isOpened} depth={folder.depth}>
+      <FolderBranchWrapper
+        isCollapsed={folder.isCollapsed}
+        depth={folder.depth}
+      >
         <p onClick={(e) => onClickFolder(folder)}>{folder.displayName}</p>
       </FolderBranchWrapper>
-      {folder.isOpened && (
+      {!folder.isCollapsed && (
         <>
           {folder.childFolders.map((childFolder: FolderType) => (
             <FolderBranch
               folder={childFolder}
               onClickFolder={onClickFolder}
               onClickFile={onClickFile}
-              key={`folder-branch-${folder.id}`}
+              key={`folder-branch-${childFolder.id}`}
             />
           ))}
           {folder.childFiles.map((childFile: FileType) => (
-            <FileBranch file={childFile} onClickFile={onClickFile} />
+            <FileBranch
+              file={childFile}
+              onClickFile={onClickFile}
+              key={`file-branch-${childFile.id}`}
+            />
           ))}
         </>
       )}

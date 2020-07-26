@@ -37,7 +37,7 @@ const uploadZipFile = async (zipFile: File): Promise<FolderType> => {
     name: '/',
     displayName: '/',
     id: uuid(),
-    isOpened: true,
+    isCollapsed: true,
     childFiles: [],
     childFolders: [],
     depth: 0,
@@ -62,7 +62,7 @@ const uploadZipFile = async (zipFile: File): Promise<FolderType> => {
           id: uuid(),
           childFiles: [],
           childFolders: [],
-          isOpened: true,
+          isCollapsed: true,
           depth,
         });
       } else {

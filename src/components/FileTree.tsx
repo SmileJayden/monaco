@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FileType, FolderType } from '~/types';
 import FileBranch from '~/components/FileBranch';
@@ -8,6 +8,7 @@ interface FileTreeProps {
   files: FileType[];
   folders: FolderType[];
   onClickFile: (file: FileType) => void;
+  onClickFolder: (folder: FolderType) => void;
 }
 
 const FileTreeWrapper = styled.div`
@@ -23,11 +24,12 @@ const FileTreeWrapper = styled.div`
   }
 `;
 
-const FileTree: React.FC<FileTreeProps> = ({ files, folders, onClickFile }) => {
-  const handleOnClickFolder = useCallback(() => {
-    console.log('handleOnClickFolder');
-  }, []);
-
+const FileTree: React.FC<FileTreeProps> = ({
+  files,
+  folders,
+  onClickFile,
+  onClickFolder,
+}) => {
   return (
     <FileTreeWrapper>
       <h2>File Tree</h2>
@@ -36,8 +38,8 @@ const FileTree: React.FC<FileTreeProps> = ({ files, folders, onClickFile }) => {
           return (
             <FolderBranch
               folder={folder}
-              onClickFolder={handleOnClickFolder}
               onClickFile={onClickFile}
+              onClickFolder={onClickFolder}
               key={`folder-branch-${folder.id}`}
             />
           );

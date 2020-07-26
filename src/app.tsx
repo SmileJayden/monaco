@@ -10,7 +10,7 @@ import CodingRoom from '~/components/CodingRoom';
 import { FileType, FolderType } from '~/types';
 import {
   findTargetFile,
-  getFileExtension,
+  findTargetFolder,
   getIsViewable,
   uploadZipFile,
 } from '~/utils';
@@ -101,6 +101,21 @@ const App = () => {
     //   });
   };
 
+  const handleOnClickFolder = useCallback(
+    (folder: FolderType) => {
+      if (rootFolder) {
+        const cloneRootFolder = cloneDeep(rootFolder);
+        const targetFolder = findTargetFolder(cloneRootFolder, folder.name);
+        if (targetFolder) {
+          targetFolder.isCollapsed = !targetFolder.isCollapsed;
+        }
+        setRootFolder(cloneRootFolder);
+        setFolders(cloneRootFolder.childFolders);
+      }
+    },
+    [folders, rootFolder]
+  );
+
   const handleOnClickFile = useCallback(
     (file: FileType): void => {
       if (!getIsViewable(file)) {
@@ -168,6 +183,7 @@ const App = () => {
         <FileTree
           files={files}
           folders={folders}
+          onClickFolder={handleOnClickFolder}
           onClickFile={handleOnClickFile}
         />
         <div className="editor">
