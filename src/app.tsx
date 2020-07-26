@@ -104,16 +104,34 @@ const App = () => {
   const handleOnClickFolder = useCallback(
     (folder: FolderType) => {
       if (rootFolder) {
-        const cloneRootFolder = cloneDeep(rootFolder);
-        const targetFolder = findTargetFolder(cloneRootFolder, folder.name);
+        const cloneFolders = cloneDeep(folders);
+        const mockRootFolder: FolderType = {
+          name: '/',
+          displayName: '/',
+          id: uuid(),
+          isCollapsed: true,
+          childFiles: [],
+          childFolders: cloneFolders,
+          depth: 0,
+        };
+        const targetFolder = findTargetFolder(mockRootFolder, folder.name);
         if (targetFolder) {
           targetFolder.isCollapsed = !targetFolder.isCollapsed;
         }
-        setRootFolder(cloneRootFolder);
-        setFolders(cloneRootFolder.childFolders);
+        setFolders(cloneFolders);
+
+        setRootFolder((prevState: FolderType | undefined) => {
+          if (prevState) {
+            return {
+              ...prevState,
+              childFolders: cloneFolders,
+            };
+          }
+          return undefined;
+        });
       }
     },
-    [folders, rootFolder]
+    [folders]
   );
 
   const handleOnClickFile = useCallback(

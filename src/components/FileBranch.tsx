@@ -14,7 +14,8 @@ interface FileBranchWrapper {
 const FileBranchWrapper = styled.div<FileBranchWrapper>`
   background-color: #0356fc;
   p {
-    padding: 10px 10px 10px ${(props) => props.depth * 10}px;
+    padding: 10px 10px 10px 0;
+    margin-left: ${(props) => props.depth * 20}px;
     cursor: pointer;
     overflow-x: auto;
   }

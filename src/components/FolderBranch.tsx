@@ -17,7 +17,8 @@ interface FolderBranchWrapperProps {
 const FolderBranchWrapper = styled.div<FolderBranchWrapperProps>`
   background-color: #03009c;
   p {
-    padding: 10px 10px 10px ${(props) => props.depth * 10}px;
+    padding: 10px 10px 10px 0;
+    margin-left: ${(props) => props.depth * 20}px;
     cursor: pointer;
     overflow-x: auto;
 
@@ -35,6 +36,7 @@ const FolderBranch: React.FC<FolderBranchProps> = ({
   onClickFolder,
   onClickFile,
 }) => {
+  console.log('folder name', folder.name, 'rerender');
   return (
     <>
       <FolderBranchWrapper
