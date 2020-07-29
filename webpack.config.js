@@ -16,7 +16,7 @@ module.exports = (env, options) => {
         {
           test: /\.tsx?$/,
           use: 'ts-loader',
-          exclude: /node_modules/,
+          // exclude: /node_modules/,
         },
         {
           test: /\.jsx?$/,
@@ -33,7 +33,7 @@ module.exports = (env, options) => {
           use: ['style-loader', 'css-loader'],
         },
         {
-          test: /\.(woff|woff2|ttf|eot)$/,
+          test: /\.(woff|woff2|ttf|eot|svg)$/,
           use: ['file-loader'],
         },
       ],

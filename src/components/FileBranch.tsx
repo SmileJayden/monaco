@@ -12,7 +12,6 @@ interface FileBranchWrapper {
 }
 
 const FileBranchWrapper = styled.div<FileBranchWrapper>`
-  background-color: #0356fc;
   p {
     padding: 10px 10px 10px 0;
     margin-left: ${(props) => props.depth * 20}px;
@@ -20,7 +19,7 @@ const FileBranchWrapper = styled.div<FileBranchWrapper>`
     overflow-x: auto;
   }
   &:hover {
-    background-color: #03fcf0;
+    background-color: #cccccc;
   }
 `;
 

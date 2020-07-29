@@ -1,19 +1,23 @@
-import React, { ChangeEvent, MouseEvent } from 'react';
+import React, { MouseEvent } from 'react';
+import Dropzone from 'react-dropzone-uploader';
+import { IFileWithMeta } from 'react-dropzone-uploader/dist/Dropzone';
+
 import styled from 'styled-components';
+import 'react-dropzone-uploader/dist/styles.css';
 
 interface FileLoadHandlerProps {
-  handleChangeFile: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleChangeFile: (e: File) => void;
   handleClickBtn: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 const FileLoadHandlerWrapper = styled.div`
   box-sizing: border-box;
-  background-color: cadetblue;
+  background-color: #130e40;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  height: 200px;
   padding: 10px;
 `;
 
@@ -23,7 +27,17 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
 }) => {
   return (
     <FileLoadHandlerWrapper>
-      <input type="file" onChange={(e) => handleChangeFile(e)} />
+      <Dropzone
+        inputContent="Plz input ZIP file"
+        onChangeStatus={(e: IFileWithMeta) => handleChangeFile(e.file)}
+        maxFiles={1}
+        multiple={false}
+        canCancel={true}
+        styles={{
+          dropzone: { width: 500, height: 30 },
+        }}
+        accept=".zip"
+      />
       <button onClick={(e) => handleClickBtn(e)}>Download ZIP</button>
     </FileLoadHandlerWrapper>
   );

@@ -16,12 +16,13 @@ const FileTreeWrapper = styled.div`
   height: calc(100vh - 100px);
   width: 300px;
   overflow-y: auto;
-  background-color: cornflowerblue;
+  background-color: #252526;
+
   color: white;
   h2 {
     font-size: 20px;
     padding: 15px;
-    border-bottom: 1px solid royalblue;
+    border-bottom: 1px solid black;
   }
 `;
 

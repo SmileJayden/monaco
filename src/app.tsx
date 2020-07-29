@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import debounce from 'lodash/fp/debounce';
 import cloneDeep from 'lodash/fp/cloneDeep';
@@ -64,28 +64,25 @@ const App = () => {
     undefined
   );
 
-  const uploadFile = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
-      const zipFile: File | undefined = e.target.files?.[0];
+  const uploadFile = useCallback(async (e: File): Promise<void> => {
+    const zipFile: File | undefined = e;
 
-      if (zipFile) {
-        setZipFileName(zipFile.name);
-        setFiles([]);
-        setFolders([]);
-        setRootFolder(undefined);
-        setOpenFiles([]);
-        setSelectedFile(undefined);
+    if (zipFile) {
+      setZipFileName(zipFile.name);
+      setFiles([]);
+      setFolders([]);
+      setRootFolder(undefined);
+      setOpenFiles([]);
+      setSelectedFile(undefined);
 
-        const rootFolder: FolderType = await uploadZipFile(zipFile);
-        if (rootFolder) {
-          setRootFolder(rootFolder);
-          setFolders(rootFolder.childFolders);
-          setFiles(rootFolder.childFiles);
-        }
+      const rootFolder: FolderType = await uploadZipFile(zipFile);
+      if (rootFolder) {
+        setRootFolder(rootFolder);
+        setFolders(rootFolder.childFolders);
+        setFiles(rootFolder.childFiles);
       }
-    },
-    []
-  );
+    }
+  }, []);
 
   const handleDownLoadFile = useCallback((): void => {
     const zip = JSZip();

@@ -15,7 +15,7 @@ interface FolderBranchWrapperProps {
 }
 
 const FolderBranchWrapper = styled.div<FolderBranchWrapperProps>`
-  background-color: #03009c;
+  background-color: #80808033;
   p {
     padding: 10px 10px 10px 0;
     margin-left: ${(props) => props.depth * 20}px;
@@ -25,9 +25,6 @@ const FolderBranchWrapper = styled.div<FolderBranchWrapperProps>`
     &::before {
       content: ${(props) => (props.isCollapsed ? "'▶'" : "'▼'")};
     }
-  }
-  &:hover {
-    background-color: #03fcf0;
   }
 `;
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FileType } from '~/types';
+import closeBtn from '~/assets/svg/close.svg';
 
 interface TabsProps {
   files: FileType[];
@@ -21,21 +22,38 @@ const TabsWrapper = styled.div`
   border-bottom: 1px solid dimgrey;
 
   .tab {
-    margin: 0 10px;
+    margin: 5px 5px 0;
+    max-height: 40px;
+    min-height: 40px;
     padding: 5px;
     cursor: pointer;
     display: flex;
     flex-direction: row;
+    align-items: center;
     &:hover {
-      background-color: dimgrey;
+      background-color: #cccccc;
     }
     &.selected {
       cursor: initial;
-      background-color: darkgoldenrod;
+      background-color: dimgray;
     }
-    button {
+    p {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow-x: auto;
+      height: 28px;
+      line-height: 28px;
+    }
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      min-width: 50px;
+      width: 20px;
+      margin-left: 4px;
+      &:hover {
+        background-color: whitesmoke;
+      }
     }
   }
 `;
@@ -53,8 +71,13 @@ const Tabs: React.FC<TabsProps> = ({
           key={`tap-${file.id}`}
           className={`tab ${file.id === selectedFileId ? 'selected' : ''}`}
         >
-          <p onClick={() => onClickFileTap(file)}>{file.name}</p>
-          <button onClick={() => onClickBtn(file)}>닫기</button>
+          <p onClick={() => onClickFileTap(file)}>{file.displayName}</p>
+          <img
+            className="button"
+            onClick={() => onClickBtn(file)}
+            src={closeBtn}
+            alt="closeBtn"
+          />
         </div>
       ))}
     </TabsWrapper>
