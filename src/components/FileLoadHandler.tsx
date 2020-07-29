@@ -11,12 +11,12 @@ interface FileLoadHandlerProps {
 
 const FileLoadHandlerWrapper = styled.div`
   box-sizing: border-box;
-  background-color: #130e40;
+  background-color: whitesmoke;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 200px;
+  height: 140px;
   padding: 10px;
 `;
 
@@ -32,7 +32,7 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
         multiple={false}
         canCancel={true}
         styles={{
-          dropzone: { width: 500, height: 30 },
+          dropzone: { width: 400, height: 10 },
         }}
         accept=".zip"
       />

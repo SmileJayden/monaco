@@ -20,6 +20,7 @@ const TabsWrapper = styled.div`
   align-items: center;
   overflow-x: auto;
   border-bottom: 1px solid dimgrey;
+  box-sizing: border-box;
 
   .tab {
     margin: 5px 5px 0;
@@ -64,17 +65,28 @@ const Tabs: React.FC<TabsProps> = ({
   onClickFileTap,
   onClickBtn,
 }) => {
+  const handleClickBtn = (
+    e: React.MouseEvent<HTMLImageElement>,
+    file: FileType
+  ) => {
+    e.stopPropagation();
+    onClickBtn(file);
+  };
+
   return (
     <TabsWrapper>
       {files.map((file: FileType) => (
         <div
           key={`tap-${file.id}`}
           className={`tab ${file.id === selectedFileId ? 'selected' : ''}`}
+          onClick={() => onClickFileTap(file)}
         >
-          <p onClick={() => onClickFileTap(file)}>{file.displayName}</p>
+          <p>{file.displayName}</p>
           <img
             className="button"
-            onClick={() => onClickBtn(file)}
+            onClick={(e: React.MouseEvent<HTMLImageElement>) =>
+              handleClickBtn(e, file)
+            }
             src={closeBtn}
             alt="closeBtn"
           />

@@ -100,6 +100,7 @@ const App = () => {
         })
         .then((content) => {
           FileSaver.saveAs(content, zipFileName);
+          toast.info('download succeed ^^@');
         });
     } else {
       toast.warning('download failed');
