@@ -2,27 +2,56 @@ import React from 'react';
 import styled from 'styled-components';
 import FileBranch from '~/components/FileBranch';
 import FolderBranch from '~/components/FolderBranch';
+import download from '~/assets/svg/download.svg';
 import { FileType, FolderType } from '~/types';
+import closeBtn from '~/assets/svg/close.svg';
 
 interface FileTreeProps {
   files: FileType[];
   folders: FolderType[];
   onClickFile: (file: FileType) => void;
   onClickFolder: (folder: FolderType) => void;
+  onClickDownload: () => void;
 }
 
 const FileTreeWrapper = styled.div`
-  box-sizing: border-box;
-  height: calc(100vh - 100px);
   width: 300px;
-  overflow-y: auto;
-  background-color: #252526;
 
+  background-color: #252526;
   color: white;
-  h2 {
-    font-size: 20px;
-    padding: 15px;
+
+  .header {
+    box-sizing: border-box;
+    height: 50px;
+    display: flex;
+    align-items: center;
     border-bottom: 1px solid black;
+    padding: 0 10px;
+    h2 {
+      font-size: 20px;
+    }
+    .button-wrapper {
+      margin-left: auto;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: grey;
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      img {
+        width: 24px;
+        height: 24px;
+      }
+      &:hover {
+        background-color: whitesmoke;
+      }
+    }
+  }
+  .branch-container {
+    height: calc(100vh - 150px);
+    overflow-y: auto;
   }
 `;
 
@@ -31,11 +60,22 @@ const FileTree: React.FC<FileTreeProps> = ({
   folders,
   onClickFile,
   onClickFolder,
+  onClickDownload,
 }) => {
   return (
     <FileTreeWrapper>
-      <h2>File Tree</h2>
-      <div className={'branch-container'}>
+      <div className="header">
+        <h2>File Tree</h2>
+        <div className="button-wrapper">
+          <img
+            className="button"
+            onClick={onClickDownload}
+            src={download}
+            alt="download"
+          />
+        </div>
+      </div>
+      <div className="branch-container">
         {folders.map((folder: FolderType) => {
           return (
             <FolderBranch

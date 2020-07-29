@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import Dropzone from 'react-dropzone-uploader';
 import { IFileWithMeta } from 'react-dropzone-uploader/dist/Dropzone';
 
@@ -7,7 +7,6 @@ import 'react-dropzone-uploader/dist/styles.css';
 
 interface FileLoadHandlerProps {
   handleChangeFile: (e: File) => void;
-  handleClickBtn: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 const FileLoadHandlerWrapper = styled.div`
@@ -23,7 +22,6 @@ const FileLoadHandlerWrapper = styled.div`
 
 const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
   handleChangeFile,
-  handleClickBtn,
 }) => {
   return (
     <FileLoadHandlerWrapper>
@@ -38,7 +36,6 @@ const FileLoadHandler: React.FC<FileLoadHandlerProps> = ({
         }}
         accept=".zip"
       />
-      <button onClick={(e) => handleClickBtn(e)}>Download ZIP</button>
     </FileLoadHandlerWrapper>
   );
 };

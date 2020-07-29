@@ -198,16 +198,14 @@ const App = () => {
 
   return (
     <AppWrapper>
-      <FileLoadHandler
-        handleChangeFile={uploadFile}
-        handleClickBtn={handleDownLoadFile}
-      />
+      <FileLoadHandler handleChangeFile={uploadFile} />
       <div className="program">
         <FileTree
           files={files}
           folders={folders}
-          onClickFolder={handleOnClickFolder}
           onClickFile={handleOnClickFile}
+          onClickFolder={handleOnClickFolder}
+          onClickDownload={handleDownLoadFile}
         />
         <div className="editor">
           <Tabs
