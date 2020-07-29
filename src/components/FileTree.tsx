@@ -12,7 +12,8 @@ interface FileTreeProps {
 }
 
 const FileTreeWrapper = styled.div`
-  height: 500px;
+  box-sizing: border-box;
+  height: calc(100vh - 100px);
   width: 300px;
   overflow-y: auto;
   background-color: cornflowerblue;

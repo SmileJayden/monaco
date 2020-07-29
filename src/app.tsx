@@ -2,6 +2,7 @@ import React, { ChangeEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import debounce from 'lodash/fp/debounce';
 import cloneDeep from 'lodash/fp/cloneDeep';
+import classNames from 'classnames';
 import { v4 as uuid } from 'uuid';
 import { encode } from 'js-base64';
 import JSZip from 'jszip';
@@ -222,11 +223,9 @@ const App = () => {
             {openFiles.map((openFile) => {
               return (
                 <div
-                  className={`coding-room ${
-                    openFile.id === selectedFile?.id
-                      ? 'coding-room-selected'
-                      : ''
-                  }`}
+                  className={classNames('coding-room', {
+                    'coding-room-selected': openFile.id === selectedFile?.id,
+                  })}
                   key={`coding-room-${openFile.id}`}
                 >
                   <CodingRoom file={openFile} change={handleChange} />

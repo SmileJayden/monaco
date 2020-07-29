@@ -7,6 +7,7 @@ interface FileLoadHandlerProps {
 }
 
 const FileLoadHandlerWrapper = styled.div`
+  box-sizing: border-box;
   background-color: cadetblue;
   display: flex;
   flex-direction: row;

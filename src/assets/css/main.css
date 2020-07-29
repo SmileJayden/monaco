@@ -3,4 +3,6 @@
 
 body {
   font-family: 'Spoqa Han Sans';
+  height: 100vh;
+  overflow-y: hidden;
 }
