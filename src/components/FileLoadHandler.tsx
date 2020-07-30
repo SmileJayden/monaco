@@ -4,9 +4,9 @@ import {
   IFileWithMeta,
   IPreviewProps,
 } from 'react-dropzone-uploader/dist/Dropzone';
-
-import styled from 'styled-components';
 import 'react-dropzone-uploader/dist/styles.css';
+import styled from 'styled-components';
+import closeBtn from '~/assets/svg/close.svg';
 
 interface FileLoadHandlerProps {
   handleChangeFile: (e: File) => void;
@@ -33,13 +33,10 @@ const Preview = ({
 }: IPreviewProps) => {
   const { name, status } = meta;
   const handleClick = () => {
-    console.log('handleClick');
-    fileWithMeta.restart();
-    console.log('fileWithMeta', fileWithMeta);
+    fileWithMeta.remove();
   };
   return (
     <div
-      onClick={handleClick}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -62,8 +59,19 @@ const Preview = ({
         >
           {name}
         </span>
-        {status === 'done' ? 'is opened' : 'is opening...'}
+        <span>{status === 'done' ? 'is opened' : 'is opening...'}</span>
       </p>
+      <img
+        style={{
+          marginLeft: '20px',
+        }}
+        className="button"
+        width="30"
+        height="30"
+        onClick={handleClick}
+        src={closeBtn}
+        alt="closeBtn"
+      />
     </div>
   );
 };
