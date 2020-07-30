@@ -2,6 +2,8 @@ const path = require('path');
 const HTMLplugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 module.exports = (env, options) => {
   const config = {
@@ -59,6 +61,10 @@ module.exports = (env, options) => {
     config.plugins = [...config.plugins, new CleanWebpackPlugin()];
   } else {
     config.devtool = 'eval-source-map';
+  }
+
+  if (process.env.ANALYZE) {
+    config.plugins = [...config.plugins, new BundleAnalyzerPlugin()];
   }
 
   return config;
