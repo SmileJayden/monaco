@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (env, options) => {
   const config = {
@@ -13,6 +14,13 @@ module.exports = (env, options) => {
       filename: '[name].bundle.js',
     },
     mode: options.mode,
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      },
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    },
     module: {
       rules: [
         {
