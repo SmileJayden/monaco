@@ -1,8 +1,5 @@
 # simple monaco app
 
-Upload zip file
-
-
  - zip 파일 업로드, 다운로드 할 수 있습니다.
  - zip 파일을 업로드하면, 좌측 FileTree에 tree 형태로 file 과 folder가 보입니다
  - 확장자가 jpg, jpeg, png, ico 인 파일은 img로 보여줍니다
